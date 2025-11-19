@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Componente Personalizado Looker Studio</title>
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 10px 0;
+        }
+
+        .card-label {
+            font-size: 14px;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .chart-container {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #chart_div {
+            width: 100%;
+            height: 100%;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .metric-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .metric-badge.warning {
+            background: #f59e0b;
+        }
+
+        .metric-badge.success {
+            background: #10b981;
+        }
+
+        .footer {
+            background: #f5f5f5;
+            padding: 15px 30px;
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            .card-value {
+                font-size: 24px;
+            }
+            .content {
+                padding: 15px;
+            }
+            table {
+                font-size: 12px;
+            }
+            td, th {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Dashboard Personalizado</h1>
+            <p>Componente Custom para Looker Studio</p>
+        </div>
+
+        <div class="content">
+            <!-- TARJETAS DE MÉTRICAS -->
+            <div class="grid">
+                <div class="card">
+                    <div class="card-label">Total de Registros</div>
+                    <div class="card-value" id="total_registros">0</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Promedio</div>
+                    <div class="card-value" id="promedio">0</div>
+                </div>
+                <div class="card">
+                    <div class="card-label">Máximo</div>
+                    <div class="card-value" id="maximo">0</div>
+                </div>
+            </div>
+
+            <!-- GRÁFICO -->
+            <div class="chart-container">
+                <div id="chart_div"></div>
+            </div>
+
+            <!-- TABLA DE DATOS -->
+            <h3 style="margin: 30px 0 15px 0; color: #333;">Datos Detallados</h3>
+            <div class="table-container">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Categoría</th>
+                            <th>Valor</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody">
+                        <!-- Se llena con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            Actualizado: <span id="timestamp"></span>
+        </div>
+    </div>
+
+    <script>
+        // DATOS DE EJEMPLO - Reemplaza con tus datos reales
+        const dataEjemplo = [
+            { categoria: 'Ventas Online', valor: 4500 },
+            { categoria: 'Ventas Tienda', valor: 3200 },
+            { categoria: 'Marketing', valor: 2800 },
+            { categoria: 'Soporte', valor: 1950 },
+            { categoria: 'Desarrollo', valor: 3500 },
+            { categoria: 'Otros', valor: 1050 }
+        ];
+
+        // Función para inicializar el componente
+        function inicializarDashboard() {
+            // 1. Calcular métricas
+            const total = dataEjemplo.reduce((sum, item) => sum + item.valor, 0);
+            const promedio = Math.round(total / dataEjemplo.length);
+            const maximo = Math.max(...dataEjemplo.map(item => item.valor));
+
+            // 2. Mostrar métricas
+            document.getElementById('total_registros').textContent = total.toLocaleString();
+            document.getElementById('promedio').textContent = promedio.toLocaleString();
+            document.getElementById('maximo').textContent = maximo.toLocaleString();
+
+            // 3. Dibujar gráfico
+            dibujarGrafico();
+
+            // 4. Llenar tabla
+            llenarTabla();
+
+            // 5. Timestamp
+            document.getElementById('timestamp').textContent = new Date().toLocaleString('es-ES');
+        }
+
+        // Función para dibujar el gráfico
+        function dibujarGrafico() {
+            google.charts.load('current', { 'packages': ['corechart'] });
+            google.charts.setOnLoadCallback(function() {
+                const dataGrafico = google.visualization.arrayToDataTable([
+                    ['Categoría', 'Valor'],
+                    ...dataEjemplo.map(item => [item.categoria, item.valor])
+                ]);
+
+                const options = {
+                    title: 'Distribución de Valores',
+                    pieHole: 0.4,
+                    colors: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe', '#43e97b'],
+                    legend: { position: 'bottom' },
+                    tooltip: { isHtml: true },
+                    chartArea: { width: '90%', height: '90%' }
+                };
+
+                const chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                chart.draw(dataGrafico, options);
+            });
+        }
+
+        // Función para llenar la tabla
+        function llenarTabla() {
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = '';
+
+            dataEjemplo.forEach(item => {
+                const fila = document.createElement('tr');
+                
+                let badgeClass = 'success';
+                let badgeText = '✓ Activo';
+                
+                if (item.valor < 2000) {
+                    badgeClass = 'warning';
+                    badgeText = '⚠ Bajo';
+                }
+
+                fila.innerHTML = `
+                    <td><strong>${item.categoria}</strong></td>
+                    <td>${item.valor.toLocaleString()}</td>
+                    <td><span class="metric-badge ${badgeClass}">${badgeText}</span></td>
+                `;
+                tableBody.appendChild(fila);
+            });
+        }
+
+        // Ejecutar cuando carga la página
+        window.addEventListener('load', inicializarDashboard);
+
+        // Opcional: Refrescar cada 5 minutos
+        setInterval(inicializarDashboard, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
+

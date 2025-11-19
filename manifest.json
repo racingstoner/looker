@@ -1,0 +1,26 @@
+{
+  "manifestVersion": 1,
+  "name": "Dashboard Personalizado",
+  "description": "Un componente personalizado profesional para Looker Studio con gráficos, métricas y tablas interactivas",
+  "logoUrl": "https://www.gstatic.com/images/branding/product/1x/looker_studio_64dp.png",
+  "supportUrl": "",
+  "author": "Custom Developer",
+  "dataSourceRequired": false,
+  "refreshIntervalSeconds": 300,
+  "components": [
+    {
+      "id": "dashboard_component",
+      "name": "Dashboard Personalizado",
+      "title": "Dashboard con Gráficos",
+      "description": "Visualización custom con métricas, gráfico y tabla",
+      "iconUrl": "https://www.gstatic.com/images/branding/product/1x/looker_studio_64dp.png",
+      "config": []
+    }
+  ],
+  "interactions": [],
+  "enums": [],
+  "dateRangeRequired": false,
+  "defaultWidth": 12,
+  "defaultHeight": 8
+}
+
