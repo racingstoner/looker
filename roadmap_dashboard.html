@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Roadmap Q4 2025 - Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .header-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* FILTROS */
+        .filters {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .filter-group select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .filter-group select:hover {
+            border-color: #667eea;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-reset {
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-reset:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* GRID DE GRÁFICOS */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .chart-card h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 250px;
+        }
+
+        /* TIMELINE */
+        .timeline {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .timeline h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .timeline-container {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 16px;
+        }
+
+        .timeline-tasks {
+            display: grid;
+            gap: 10px;
+        }
+
+        .timeline-task {
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            border-left: 3px solid #764ba2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* TARJETAS DE TAREAS */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .task-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid #667eea;
+        }
+
+        .task-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        }
+
+        .task-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .task-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .task-impact {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .task-body {
+            padding: 20px;
+        }
+
+        .task-meta {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .meta-label {
+            color: #999;
+            font-weight: 500;
+        }
+
+        .meta-value {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-backlog {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .status-proceso {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-hecho {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-sin {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .efecto-check {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .efecto-cross {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        /* LOADING */
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+            font-size: 18px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-item {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .tasks-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* VACÍO */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            color: #999;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>📊 SEO Roadmap Q4 2025</h1>
+            <p>Dashboard de seguimiento en tiempo real</p>
+            <div class="header-stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="total-tasks">0</div>
+                    <div class="stat-label">Total de Tareas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="en-proceso">0</div>
+                    <div class="stat-label">En Proceso</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="completadas">0</div>
+                    <div class="stat-label">Completadas</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="impacto-total">0</div>
+                    <div class="stat-label">Impacto Promedio</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filters">
+            <input type="text" class="search-box" id="searchBox" placeholder="🔍 Buscar tarea...">
+            
+            <div class="filter-group">
+                <label>Estado</label>
+                <select id="filterStatus">
+                    <option value="">Todos</option>
+                    <option value="Backlog Jira">Backlog</option>
+                    <option value="En Proceso">En Proceso</option>
+                    <option value="Sin hacer">Sin Hacer</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Impacto</label>
+                <select id="filterImpacto">
+                    <option value="">Todos</option>
+                    <option value="5">Muy Alto (5)</option>
+                    <option value="4">Alto (4)</option>
+                    <option value="3">Medio (3)</option>
+                    <option value="2">Bajo (2)</option>
+                </select>
+            </div>
+
+            <button class="btn-reset" onclick="resetFilters()">🔄 Limpiar Filtros</button>
+        </div>
+
+        <!-- GRÁFICOS -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>📊 Distribución de Estados</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>🎯 Impacto de Tareas</h3>
+                <div class="chart-container">
+                    <canvas id="impactoChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>⚙️ Esfuerzo Requerido</h3>
+                <div class="chart-container">
+                    <canvas id="esfuerzoChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIMELINE -->
+        <div class="timeline">
+            <h2>📅 Timeline por Fechas</h2>
+            <div class="timeline-container" id="timeline">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Cargando datos...
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETAS -->
+        <div style="margin-bottom: 30px;">
+            <h2 style="color: white; font-size: 24px; margin-bottom: 20px;">📋 Todas las Tareas</h2>
+            <div class="tasks-grid" id="tasksGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Cargando tareas...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ID del Sheet
+        const SHEET_ID = '1O6UgyvafdUxld6yacDhmiSLjViL5mTxoxEkTVODX7Ic';
+        const SHEET_NAME = 'Roadmap';
+        let allData = [];
+        let filteredData = [];
+
+        // Función para obtener datos del Sheet
+        async function fetchSheetData() {
+            try {
+                const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+                const response = await fetch(url);
+                const csv = await response.text();
+                parseCSV(csv);
+                renderData();
+                updateCharts();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('timeline').innerHTML = '<div class="empty-state"><h3>Error al cargar datos</h3><p>Verifica que el Sheet esté compartido públicamente</p></div>';
+            }
+        }
+
+        // Parser CSV simple
+        function parseCSV(csv) {
+            const lines = csv.split('\n').slice(2); // Saltar filas de header
+            allData = [];
+
+            lines.forEach((line, index) => {
+                if (!line.trim()) return;
+
+                const cols = line.split(',').map(col => col.trim().replace(/^"|"$/g, ''));
+
+                if (cols[1]) { // Si hay tarea
+                    allData.push({
+                        vertical: cols[0] || '',
+                        tarea: cols[1] || '',
+                        shopping: cols[2] || '',
+                        search: cols[3] || '',
+                        llms: cols[4] || '',
+                        impacto: parseInt(cols[5]) || 0,
+                        implementacion: cols[6] || '',
+                        nivelAccion: cols[7] || '',
+                        equipos: cols[8] || '',
+                        priorizar: cols[9] || '',
+                        razon: cols[10] || '',
+                        kpi: cols[11] || '',
+                        esfuerzo: cols[12] || '',
+                        fecha: cols[13] || '',
+                        resultados: cols[14] || '',
+                        status: cols[15] || '',
+                        ref: cols[16] || ''
+                    });
+                }
+            });
+
+            filteredData = [...allData];
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const total = filteredData.length;
+            const enProceso = filteredData.filter(t => t.status.includes('En Proceso')).length;
+            const completadas = filteredData.filter(t => t.status.includes('hecho')).length;
+            const impactoPromedio = Math.round(
+                filteredData.reduce((sum, t) => sum + t.impacto, 0) / (total || 1)
+            );
+
+            document.getElementById('total-tasks').textContent = total;
+            document.getElementById('en-proceso').textContent = enProceso;
+            document.getElementById('completadas').textContent = completadas;
+            document.getElementById('impacto-total').textContent = impactoPromedio;
+        }
+
+        // Renderizar tarjetas
+        function renderData() {
+            updateStats();
+            renderTasks();
+            renderTimeline();
+        }
+
+        function renderTasks() {
+            const tasksGrid = document.getElementById('tasksGrid');
+
+            if (filteredData.length === 0) {
+                tasksGrid.innerHTML = '<div class="empty-state"><h3>No hay tareas</h3></div>';
+                return;
+            }
+
+            tasksGrid.innerHTML = filteredData.map(task => `
+                <div class="task-card">
+                    <div class="task-header">
+                        <div class="task-title">${task.tarea}</div>
+                        <div class="task-impact">Impacto: ${'⭐'.repeat(task.impacto)}</div>
+                    </div>
+                    <div class="task-body">
+                        <div class="task-meta">
+                            <div class="meta-row">
+                                <span class="meta-label">Fecha:</span>
+                                <span class="meta-value">${task.fecha || 'N/A'}</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-label">Esfuerzo:</span>
+                                <span class="meta-value">${task.esfuerzo || 'N/A'}</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-label">Equipos:</span>
+                                <span class="meta-value">${task.equipos || 'N/A'}</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-label">Shopping:</span>
+                                <span class="meta-value">${task.shopping === '✅' ? '<span class="efecto-check">✓</span>' : '<span class="efecto-cross">✗</span>'}</span>
+                            </div>
+                            <div class="meta-row">
+                                <span class="meta-label">Search:</span>
+                                <span class="meta-value">${task.search === '✅' ? '<span class="efecto-check">✓</span>' : '<span class="efecto-cross">✗</span>'}</span>
+                            </div>
+                        </div>
+                        <span class="status-badge ${getStatusClass(task.status)}">${task.status || 'Sin Estado'}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusClass(status) {
+            if (status.includes('Backlog')) return 'status-backlog';
+            if (status.includes('En Proceso')) return 'status-proceso';
+            if (status.includes('hecho')) return 'status-hecho';
+            return 'status-sin';
+        }
+
+        function renderTimeline() {
+            const timeline = document.getElementById('timeline');
+            const grouped = {};
+
+            filteredData.forEach(task => {
+                const fecha = task.fecha || 'Sin fecha';
+                if (!grouped[fecha]) grouped[fecha] = [];
+                grouped[fecha].push(task);
+            });
+
+            const sorted = Object.keys(grouped).sort();
+
+            timeline.innerHTML = sorted.map(fecha => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${fecha}</div>
+                    <div class="timeline-tasks">
+                        ${grouped[fecha].map(task => `
+                            <div class="timeline-task">
+                                <span>${task.tarea}</span>
+                                <span class="status-badge ${getStatusClass(task.status)}">${task.status}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Gráficos
+        let statusChart, impactoChart, esfuerzoChart;
+
+        function updateCharts() {
+            // Chart Status
+            const statusData = {
+                'Backlog Jira': filteredData.filter(t => t.status.includes('Backlog')).length,
+                'En Proceso': filteredData.filter(t => t.status.includes('En Proceso')).length,
+                'Sin hacer': filteredData.filter(t => t.status.includes('Sin hacer')).length,
+                'Completadas': filteredData.filter(t => t.status.includes('hecho')).length
+            };
+
+            const ctxStatus = document.getElementById('statusChart').getContext('2d');
+            if (statusChart) statusChart.destroy();
+            statusChart = new Chart(ctxStatus, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(statusData),
+                    datasets: [{
+                        data: Object.values(statusData),
+                        backgroundColor: ['#f3f4f6', '#fef3c7', '#fee2e2', '#d1fae5']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            // Chart Impacto
+            const impactoData = {
+                5: filteredData.filter(t => t.impacto === 5).length,
+                4: filteredData.filter(t => t.impacto === 4).length,
+                3: filteredData.filter(t => t.impacto === 3).length,
+                2: filteredData.filter(t => t.impacto === 2).length
+            };
+
+            const ctxImpacto = document.getElementById('impactoChart').getContext('2d');
+            if (impactoChart) impactoChart.destroy();
+            impactoChart = new Chart(ctxImpacto, {
+                type: 'bar',
+                data: {
+                    labels: ['Muy Alto', 'Alto', 'Medio', 'Bajo'],
+                    datasets: [{
+                        label: 'Cantidad',
+                        data: Object.values(impactoData),
+                        backgroundColor: '#667eea'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            // Chart Esfuerzo
+            const esfuerzoData = {};
+            filteredData.forEach(t => {
+                const esfuerzo = t.esfuerzo || 'N/A';
+                esfuerzoData[esfuerzo] = (esfuerzoData[esfuerzo] || 0) + 1;
+            });
+
+            const ctxEsfuerzo = document.getElementById('esfuerzoChart').getContext('2d');
+            if (esfuerzoChart) esfuerzoChart.destroy();
+            esfuerzoChart = new Chart(ctxEsfuerzo, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(esfuerzoData),
+                    datasets: [{
+                        label: 'Tareas',
+                        data: Object.values(esfuerzoData),
+                        backgroundColor: '#764ba2'
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+        }
+
+        // Filtros
+        function applyFilters() {
+            const search = document.getElementById('searchBox').value.toLowerCase();
+            const status = document.getElementById('filterStatus').value;
+            const impacto = document.getElementById('filterImpacto').value;
+
+            filteredData = allData.filter(task => {
+                const matchSearch = task.tarea.toLowerCase().includes(search);
+                const matchStatus = !status || task.status.includes(status);
+                const matchImpacto = !impacto || task.impacto === parseInt(impacto);
+
+                return matchSearch && matchStatus && matchImpacto;
+            });
+
+            renderData();
+            updateCharts();
+        }
+
+        function resetFilters() {
+            document.getElementById('searchBox').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterImpacto').value = '';
+            filteredData = [...allData];
+            renderData();
+            updateCharts();
+        }
+
+        // Event listeners
+        document.getElementById('searchBox').addEventListener('keyup', applyFilters);
+        document.getElementById('filterStatus').addEventListener('change', applyFilters);
+        document.getElementById('filterImpacto').addEventListener('change', applyFilters);
+
+        // Cargar datos al iniciar
+        window.addEventListener('load', fetchSheetData);
+
+        // Refrescar cada 5 minutos
+        setInterval(fetchSheetData, 5 * 60 * 1000);
+    </script>
+</body>
+</html>
+
